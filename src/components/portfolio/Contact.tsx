@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import emailjs from "@emailjs/browser";
 
 export const Contact = () => {
   const { t } = useLanguage();
@@ -17,31 +18,55 @@ export const Contact = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Message envoyé avec succès !");
-    setFormData({ name: "", email: "", message: "" });
+  const [submitted, setSubmitted] = useState(false); // <-- pour le message de confirmation
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await emailjs.send(
+        "service_tlcl5oa", // Service ID
+        "template_70o66g8", // Template ID
+        {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+        "s9axvxe--4N82oA04" // Public Key
+      );
+
+      toast.success("Message envoyé avec succès !");
+      setFormData({ name: "", email: "", message: "" });
+      setSubmitted(true); // <-- active le message de confirmation
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      toast.error("Une erreur est survenue. Veuillez réessayer.");
+      setSubmitted(false);
+    }
   };
 
   return (
     <section id="contact" className="section-padding bg-muted/30">
       <div className="container-custom">
-        {/* Titre identique aux autres sections */}
+        {/* Titre de section */}
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold gradient-text">
-            {t("contact.title") || "Contact"}
+            {t("contact.title") as string || "Contact"}
           </h2>
           <p className="mt-4 text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t("contact.subtitle") || "N’hésite pas à me contacter pour toute opportunité ou question"}
+            {t("contact.subtitle") as string ||
+              "N’hésitez pas à me contacter pour toute opportunité ou question"}
           </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Coordonnées (colonne gauche) */}
+          {/* Coordonnées */}
           <div className="space-y-6">
             <Card className="p-7 shadow-lg hover:shadow-xl transition-all duration-300 border-border/50">
               <div className="flex items-start gap-5">
@@ -49,7 +74,9 @@ export const Contact = () => {
                   <MapPin className="h-7 w-7 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">{t("contact.location") || "Localisation"}</h3>
+                  <h3 className="text-lg font-bold text-foreground">
+                    {t("contact.location") as string || "Localisation"}
+                  </h3>
                   <p className="text-muted-foreground mt-1">Pau, France</p>
                 </div>
               </div>
@@ -61,8 +88,12 @@ export const Contact = () => {
                   <Mail className="h-7 w-7 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">{t("contact.email") || "Email"}</h3>
-                  <p className="text-muted-foreground mt-1 break-all">elmouatassem2004@gmail.com</p>
+                  <h3 className="text-lg font-bold text-foreground">
+                    {t("contact.email") as string || "Email"}
+                  </h3>
+                  <p className="text-muted-foreground mt-1 break-all">
+                    elmouatassem2004@gmail.com
+                  </p>
                 </div>
               </div>
             </Card>
@@ -73,19 +104,21 @@ export const Contact = () => {
                   <Phone className="h-7 w-7 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">{t("contact.phone") || "Téléphone"}</h3>
+                  <h3 className="text-lg font-bold text-foreground">
+                    {t("contact.phone") as string || "Téléphone"}
+                  </h3>
                   <p className="text-muted-foreground mt-1">+33 6 21 07 82 05</p>
                 </div>
               </div>
             </Card>
           </div>
 
-          {/* Formulaire (2 colonnes à droite) */}
+          {/* Formulaire */}
           <Card className="lg:col-span-2 p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 border-border/50">
             <form onSubmit={handleSubmit} className="space-y-7">
               <div>
                 <Label htmlFor="name" className="text-base font-semibold">
-                  {t("contact.name") || "Nom"}
+                  {t("contact.name") as string || "Nom"}
                 </Label>
                 <Input
                   id="name"
@@ -94,13 +127,15 @@ export const Contact = () => {
                   onChange={handleChange}
                   required
                   className="mt-2 h-12"
-                  placeholder="Ton nom"
+                  placeholder={
+                    (t("contact.namePlaceholder") as string) || "Ton prénom"
+                  }
                 />
               </div>
 
               <div>
                 <Label htmlFor="email" className="text-base font-semibold">
-                  {t("contact.email") || "Email"}
+                  {t("contact.email") as string || "Email"}
                 </Label>
                 <Input
                   id="email"
@@ -110,13 +145,16 @@ export const Contact = () => {
                   onChange={handleChange}
                   required
                   className="mt-2 h-12"
-                  placeholder="ton.email@exemple.com"
+                  placeholder={
+                    (t("contact.emailPlaceholder") as string) ||
+                    "ton.email@exemple.com"
+                  }
                 />
               </div>
 
               <div>
                 <Label htmlFor="message" className="text-base font-semibold">
-                  {t("contact.message") || "Message"}
+                  {t("contact.message") as string || "Message"}
                 </Label>
                 <Textarea
                   id="message"
@@ -126,14 +164,28 @@ export const Contact = () => {
                   required
                   rows={7}
                   className="mt-2 resize-none"
-                  placeholder="Écris-moi quelque chose..."
+                  placeholder={
+                    (t("contact.messagePlaceholder") as string) ||
+                    "Écris ton message ici..."
+                  }
                 />
               </div>
 
-              <Button type="submit" size="lg" className="w-full text-lg h-14 shadow-soft">
-                {t("contact.send") || "Envoyer le message"}
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full text-lg h-14 shadow-soft"
+              >
+                {t("contact.send") as string || "Envoyer le message"}
               </Button>
             </form>
+
+            {/* Message de confirmation */}
+            {submitted && (
+              <p className="mt-4 text-green-600 font-semibold text-center">
+                Merci ! Ton message a bien été envoyé.
+              </p>
+            )}
           </Card>
         </div>
       </div>

@@ -1,52 +1,61 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Briefcase } from "lucide-react";
+import * as React from "react";
 
-const experiences = [
-  {
-    title: "Réparateur, technicien et chargé de clientèle à Huesca, Espagne",
-    company: "Tech Startup Inc.",
-    period: "Juillet 2018 - Juillet 2020",
-    description: [
-      "Réparation d'appareils",
-      "Conseil client",
-      "Gestion administrative",
-    ],
-  },
-];
+export interface ExperienceItem {
+  title: string;
+  company: string;
+  period: string;
+  description: string[];
+}
 
 export const Experience = () => {
-  const { t } = useLanguage();
+  const { tString } = useLanguage(); // <-- utiliser tString ici
+
+  const experiences: ExperienceItem[] = [
+    {
+      title: tString("experience.job1.title"),
+      company: tString("experience.job1.company"),
+      period: tString("experience.job1.period"),
+      description: [
+        tString("experience.job1.desc1"),
+        tString("experience.job1.desc2"),
+        tString("experience.job1.desc3"),
+      ],
+    },
+  ];
 
   return (
     <section id="experience" className="section-padding bg-muted/30">
       <div className="container-custom">
-        {/* Titre identique aux autres sections */}
         <h2 className="text-4xl sm:text-5xl font-bold mb-16 text-center gradient-text">
-          {t("experience.title") || "Expérience professionnelle"}
+          {tString("experience.title")}
         </h2>
 
         <div className="max-w-4xl mx-auto relative">
-          {/* Petite ligne verticale discrète (comme dans Formation) */}
           <div className="absolute left-6 md:left-12 top-0 bottom-0 w-0.5 bg-border/30 hidden md:block" />
 
           <div className="space-y-12">
             {experiences.map((exp, index) => (
               <div key={index} className="relative flex gap-8">
-                {/* Point timeline + icône (même style que Formation) */}
                 <div className="flex-shrink-0 z-10">
                   <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center ring-8 ring-background shadow-lg">
                     <Briefcase className="h-7 w-7 text-primary" />
                   </div>
                 </div>
 
-                {/* Carte */}
                 <div className="flex-1 pb-12 md:pb-0">
                   <Card className="p-7 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-border/50">
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
                       <div>
                         <h3 className="text-xl sm:text-2xl font-bold text-foreground">
-                          {exp.title}
+                          {exp.title.split("\n").map((line, idx) => (
+                            <React.Fragment key={idx}>
+                              {line}
+                              <br />
+                            </React.Fragment>
+                          ))}
                         </h3>
                         <p className="text-lg font-semibold text-primary mt-1">
                           {exp.company}

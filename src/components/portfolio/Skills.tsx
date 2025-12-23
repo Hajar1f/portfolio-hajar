@@ -1,57 +1,73 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-const languages = [
-  { name: "Français", level: "Natif" },
-  { name: "Espagnol", level: "Natif" },
-  { name: "Anglais", level: "C1" },
-];
-
-const technicalSkills = [
-  "Gestion de projets industriels",
-  "Optimisation des processus",
-  "Pack Office",
-  "Capacité d'apprentissage",
-  "Optimisation supply chain",
-  "SolidWorks/CATIA",
-  "Python",
-];
-
-const certifications = [
-  {
-    name: "Spécialisation Fabrication Additive",
-    description: "Procédés de production innovants",
-    status: "En cours de validation",
-  },
-  {
-    name: "Spécialiste de la Supply Chain Airbus",
-    description: "Compréhension des enjeux logistiques et de la chaîne de valeur du secteur",
-    status: "En cours de validation",
-  },
-];
+import React from "react";
 
 export const Skills = () => {
   const { t } = useLanguage();
+
+  const rawTech = t("skills.technical.list");
+  const technicalSkills: string[] = Array.isArray(rawTech) ? rawTech : [];
+
+  const rawSoft = t("skills.soft.list");
+  const softSkills: string[] = Array.isArray(rawSoft) ? rawSoft : [];
+
+  // Certifications
+  const certifications = [
+    {
+      name: t("cert.additive.title") as string,
+      description: t("cert.additive.description") as string,
+      status: t("cert.additive.status") as string,
+    },
+    {
+      name: t("cert.airbus.title") as string,
+      description: t("cert.airbus.description") as string,
+      status: t("cert.airbus.status") as string,
+    },
+  ];
+
+  // Langues
+  const languages = [
+    { name: t("lang.fr") as string, level: t("lang.natif") as string },
+    { name: t("lang.es") as string, level: t("lang.natif") as string },
+    { name: t("lang.en") as string, level: t("lang.c1") as string },
+  ];
 
   return (
     <section id="skills" className="section-padding bg-muted/30">
       <div className="container-custom">
         <h2 className="text-4xl sm:text-5xl font-bold mb-16 text-center gradient-text">
-          {t("skills.title")}
+          {t("skills.title") as string}
         </h2>
 
-        {/* Changement clé : grid → space-y (empilé verticalement sur tous les écrans) */}
         <div className="space-y-10 max-w-4xl mx-auto">
           {/* Compétences techniques */}
           <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <h3 className="text-2xl font-bold mb-8 text-primary">
-              {t("skills.technical") || "Compétences techniques"}
+              {t("skills.technical") as string}
             </h3>
             <div className="flex flex-wrap gap-3">
-              {technicalSkills.map((skill) => (
+              {technicalSkills.map((skill, idx) => (
                 <Badge
-                  key={skill}
+                  key={idx}
+                  variant="secondary"
+                  className="text-sm sm:text-base px-5 py-2.5 font-medium hover:bg-secondary/80 transition-colors"
+                >
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </Card>
+
+          {/* Soft Skills */}
+          <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 className="text-2xl font-bold mb-8 text-primary">
+              {t("skills.soft.title") as string}
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {softSkills.map((skill, idx) => (
+                <Badge
+                  key={idx}
                   variant="secondary"
                   className="text-sm sm:text-base px-5 py-2.5 font-medium hover:bg-secondary/80 transition-colors"
                 >
@@ -64,7 +80,7 @@ export const Skills = () => {
           {/* Certifications */}
           <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <h3 className="text-2xl font-bold mb-8 text-primary">
-              {t("skills.certifications") || "Certifications"}
+              {t("skills.certifications") as string}
             </h3>
             <div className="space-y-5">
               {certifications.map((cert, index) => (
@@ -79,7 +95,12 @@ export const Skills = () => {
                     </Badge>
                   </div>
                   <p className="text-sm sm:text-base text-muted-foreground">
-                    {cert.description}
+                    {cert.description.split("\n").map((line, idx) => (
+                      <React.Fragment key={idx}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
                   </p>
                 </div>
               ))}
@@ -89,12 +110,12 @@ export const Skills = () => {
           {/* Langues */}
           <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <h3 className="text-2xl font-bold mb-8 text-primary">
-              {t("skills.languages") || "Langues"}
+              {t("skills.languages") as string}
             </h3>
             <div className="flex flex-wrap gap-4">
-              {languages.map((lang) => (
+              {languages.map((lang, idx) => (
                 <Badge
-                  key={lang.name}
+                  key={idx}
                   variant="default"
                   className="text-base px-6 py-3 font-semibold bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                 >

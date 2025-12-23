@@ -1,28 +1,32 @@
-import { useLanguage } from "@/contexts/LanguageContext";
+// Interests.tsx
+import React from "react";
 import { Card } from "@/components/ui/card";
 import { Dumbbell, HeartHandshake } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
+// Définition de la liste des intérêts
 const interests = [
   {
     icon: Dumbbell,
-    title: "Powerlifting",
-    description: "Pratique intensive du powerlifting (squat, bench, deadlift). Développement de la force brute, de la discipline mentale et de la résilience.",
+    titleKey: "interests.powerlifting.title",
+    descriptionKey: "interests.powerlifting.desc",
   },
   {
     icon: HeartHandshake,
-    title: "ONG Recyclage Technologique – Huesca, Espagne",
-    description: "Membre actif depuis 2023 → Collecte, diagnostic, réparation et reconditionnement d’ordinateurs usagés destinés à des familles et écoles défavorisées. Mise en place et optimisation complète du flux logistique et technique.",
+    titleKey: "interests.recycling.title",
+    descriptionKey: "interests.recycling.desc",
   },
 ];
 
 export const Interests = () => {
-  const { t } = useLanguage();
+  // Utilisation du contexte langue
+  const { tString } = useLanguage();
 
   return (
     <section id="interests" className="section-padding bg-muted/30">
       <div className="container-custom">
         <h2 className="text-4xl sm:text-5xl font-bold mb-16 text-center gradient-text">
-          {t("interests.title") || "Centres d’intérêt"}
+          {tString("interests.title")}
         </h2>
 
         <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
@@ -38,11 +42,11 @@ export const Interests = () => {
                 </div>
 
                 <h3 className="text-2xl font-bold mb-4 text-foreground">
-                  {interest.title}
+                  {tString(interest.titleKey)}
                 </h3>
 
                 <p className="text-lg leading-relaxed text-muted-foreground">
-                  {interest.description}
+                  {tString(interest.descriptionKey)}
                 </p>
               </Card>
             );

@@ -10,12 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import moi from "@/assets/moi.png.png";
 
 const sections = ["about", "skills", "education", "experience", "projects", "interests", "contact"];
 
 export const Header = () => {
   const { theme, toggleTheme } = useTheme();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, tString } = useLanguage(); // <-- utiliser tString ici
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToSection = (id: string) => {
@@ -30,8 +31,8 @@ export const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <nav className="container-custom px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-primary text-primary-foreground font-bold text-xl">
-            M
+          <div className="w-10 h-10 rounded-full overflow-hidden">
+            <img src={moi} alt="Moi" className="w-full h-full object-cover" />
           </div>
 
           {/* Desktop Navigation */}
@@ -43,7 +44,7 @@ export const Header = () => {
                 onClick={() => scrollToSection(section)}
                 className="text-sm"
               >
-                {t(`nav.${section}`)}
+                {tString(`nav.${section}`)} {/* <-- correction ici */}
               </Button>
             ))}
           </div>
@@ -76,11 +77,7 @@ export const Header = () => {
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
@@ -95,7 +92,7 @@ export const Header = () => {
                 onClick={() => scrollToSection(section)}
                 className="w-full justify-start"
               >
-                {t(`nav.${section}`)}
+                {tString(`nav.${section}`)} {/* <-- correction ici aussi */}
               </Button>
             ))}
           </div>
